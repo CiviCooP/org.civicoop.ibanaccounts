@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<CustomData>
+  <CustomGroups>
+    <CustomGroup>
+      <name>IBAN</name>
+      <title>IBAN</title>
+      <extends>Contact</extends>
+      <style>Tab</style>
+      <collapse_display>0</collapse_display>
+      <help_pre></help_pre>
+      <help_post></help_post>
+      <weight>1</weight>
+      <is_active>1</is_active>
+      <table_name>civicrm_value_iban</table_name>
+      <is_multiple>1</is_multiple>
+      <collapse_adv_display>0</collapse_adv_display>
+      <created_date>2014-06-10 12:43:59</created_date>
+      <is_reserved>0</is_reserved>
+    </CustomGroup>
+  </CustomGroups>
+  <CustomFields>
+    <CustomField>
+      <name>IBAN</name>
+      <label>IBAN</label>
+      <data_type>String</data_type>
+      <html_type>Text</html_type>
+      <is_required>1</is_required>
+      <is_searchable>1</is_searchable>
+      <is_search_range>0</is_search_range>
+      <weight>1</weight>
+      <is_active>1</is_active>
+      <is_view>0</is_view>
+      <text_length>255</text_length>
+      <note_columns>60</note_columns>
+      <note_rows>4</note_rows>
+      <column_name>iban</column_name>
+      <custom_group_name>IBAN</custom_group_name>
+    </CustomField>
+    <CustomField>
+      <name>BIC</name>
+      <label>BIC</label>
+      <data_type>String</data_type>
+      <html_type>Text</html_type>
+      <is_required>1</is_required>
+      <is_searchable>0</is_searchable>
+      <is_search_range>0</is_search_range>
+      <weight>2</weight>
+      <help_pre>BIC is the Bank Identifier Code.</help_pre>
+      <is_active>1</is_active>
+      <is_view>0</is_view>
+      <text_length>255</text_length>
+      <note_columns>60</note_columns>
+      <note_rows>4</note_rows>
+      <column_name>bic</column_name>
+      <custom_group_name>IBAN</custom_group_name>
+    </CustomField>
+  </CustomFields>
+</CustomData>
