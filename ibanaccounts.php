@@ -3,6 +3,38 @@
 require_once 'ibanaccounts.civix.php';
 
 /**
+ * Validate the entered IBAN account number
+ * 
+ * 
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_validateForm
+ * @param type $formName
+ * @param type $fields
+ * @param type $files
+ * @param type $form
+ * @param type $errors
+ */
+function ibanaccounts_civicrm_validateForm( $formName, &$fields, &$files, &$form, &$errors ) {
+  if ($formName == 'CRM_Contact_Form_CustomData') {
+    $config = CRM_Ibanaccounts_Config::singleton();
+    
+    $groupId = $form->getVar('_groupID');
+    if ($groupId != $config->getIbanCustomGroupValue('id')) {
+      return;
+    }
+    
+    require_once('php-iban/oophp-iban.php');
+    $iban = new IBAN();
+    foreach($fields as $key => $value) {
+      if (strpos($key, "custom_".$config->getIbanCustomFieldValue('id'))===0) {
+        if (!$iban->Verify($value)) {
+          $errors[$key] = ts("'".$value."' is not valid IBAN");
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implementation of hook_civicrm_config
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
