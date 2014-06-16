@@ -42,4 +42,8 @@ class CRM_Ibanaccounts_Config {
     return $this->custom_fields['IBAN']['IBAN'][$field];
   }
   
+  public function getBicCustomFieldValue($field='id') {
+    return $this->custom_fields['IBAN']['BIC'][$field];
+  }
+  
 }

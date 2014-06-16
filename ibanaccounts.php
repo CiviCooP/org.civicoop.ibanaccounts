@@ -35,6 +35,20 @@ function ibanaccounts_civicrm_validateForm( $formName, &$fields, &$files, &$form
 }
 
 /**
+ * 
+ * Implementation of hook_civicrm_buildForm
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_buildForm
+ */
+function ibanaccounts_civicrm_buildForm($formName, &$form) {
+ if ($formName == 'CRM_Member_Form_Membership') {
+   //add template 
+   $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
+   $membership->parse();
+ } 
+}
+
+/**
  * Implementation of hook_civicrm_config
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
