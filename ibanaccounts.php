@@ -48,6 +48,13 @@ function ibanaccounts_civicrm_buildForm($formName, &$form) {
  } 
 }
 
+function ibanaccounts_civicrm_postProcess( $formName, &$form ) {
+  if ($formName == 'CRM_Member_Form_Membership') {
+   $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
+   $membership->postProcess();
+  }
+}
+
 /**
  * Implementation of hook_civicrm_config
  *
