@@ -46,7 +46,9 @@ class CRM_Ibanaccounts_Ibanaccounts {
    * @return int the id of the IBAN
    */
   public static function saveIBANForContact($iban, $bic, $contactId) {
-    
+    if (empty($iban)) {
+      return;
+    }
     
     $id = self::getIdByIBANAndContactId($iban, $contactId);
     if ($id) {

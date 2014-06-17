@@ -41,7 +41,7 @@ class CRM_Ibanaccounts_Buildform_Membership {
     CRM_Core_DAO::executeQuery("DELETE FROM `".$table."` WHERE `entity_id` = %1", array(1 => array($mid, 'Integer')));
     
     $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
-    $iban_account_id = $values['iban_account'];
+    $iban_account_id = isset($values['iban_account']) ? $values['iban_account'] : false;
       
     if ($iban_account_id == -1 || !isset($accounts[$iban_account_id])) {
       $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $contactId);
@@ -65,10 +65,17 @@ class CRM_Ibanaccounts_Buildform_Membership {
    * Add the UI code to the form
    */
   public function parse() {
+    $config = CRM_Ibanaccounts_Config::singleton();
+    $table = $config->getIbanMembershipCustomGroupValue('table_name');
+    $iban_field = $config->getIbanMembershipCustomFieldValue('column_name');
+    
     $options[] = ts(' -- Select IBAN Account --');
     $options[-1] = ts('New account');
     $options[-2] = ts('No IBAN details provided');
     $accounts = array();
+    
+    $membership_ids = $this->form->getVar('_membershipIDs');
+    $mid = isset($membership_ids[0]) ? $membership_ids[0] : false;
     
     $contactId = '';
     $values = $this->form->exportValues();
@@ -102,6 +109,20 @@ class CRM_Ibanaccounts_Buildform_Membership {
     $this->form->add('select', 'iban_account', ts('IBAN Account'), $options);
     $this->form->add('text', 'iban', ts('IBAN'));
     $this->form->add('text', 'bic', ts('BIC'));
+    
+    if ($mid) {
+      //set default value
+      $sql = "SELECT * FROM `".$table."` WHERE `entity_id` = %1";
+      $dao = CRM_Core_DAO::executeQuery($sql, array(1 => array($mid, 'Integer')));
+      if ($dao->fetch()) {
+        $iban = $dao->$iban_field;
+        $account_id = CRM_Ibanaccounts_Ibanaccounts::getIdByIBANAndContactId($iban, $contactId);
+        if ($account_id) {
+          $defaults['iban_account'] = $account_id;
+          $this->form->setDefaults($defaults);
+        }
+      }
+    }
       
     CRM_Core_Region::instance('page-body')->add($snippet);
     CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.ibanaccounts', 'membership.js');

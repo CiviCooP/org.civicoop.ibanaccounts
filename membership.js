@@ -11,6 +11,7 @@ var IBAN_Membership = {
     
     init: function(membershipContactId) {
         this.membershipContactId = membershipContactId;
+        cj('#IBAN_Membership').remove(); //remove the custom fields for iban
         this.initEventHandlers(this);
     },
     retrieveMembershipContactId: function() {
@@ -54,6 +55,8 @@ var IBAN_Membership = {
                 cj('tr.crm-membership-form-block-bic').addClass('hiddenElement');
             }
         });
+        
+        cj('#iban_account').trigger('change'); //set to right display on initial
 
         //init onchange handlers to change the iban options
         cj(this.contactElement).blur(function(e) {
