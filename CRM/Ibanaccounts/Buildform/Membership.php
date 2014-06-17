@@ -13,6 +13,64 @@ class CRM_Ibanaccounts_Buildform_Membership {
     $this->form = $form;
   }
   
+  public function validateForm(&$values, &$files, &$errors ) {    
+    //retrieve the contact ID for the IBAN
+    $contactId = ''; 
+    if (!empty($this->form->getVar('_contactID'))) {
+      $contactId = $this->form->getVar('_contactID');
+    } 
+    
+    //check if contribution is recorded for someone else
+    if (isset($values['contribution_contact_select_id']) && isset($values['contribution_contact_select_id'][1])) {
+      $contactId = $values['contribution_contact_select_id'][1];
+    } elseif (isset($values['contact_select_id']) && isset($values['contact_select_id'][1])) {
+      $contactId = $values['contact_select_id'][1];
+    }
+    
+    $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
+    $iban_account_id = isset($values['iban_account']) ? $values['iban_account'] : false;
+      
+    if ($iban_account_id == -1 || !isset($accounts[$iban_account_id])) {
+      require_once('php-iban/oophp-iban.php');
+      $ibanValidator = new IBAN();
+      
+      //a new iban account is provided
+      if (empty($values['iban'])) {
+        $errors['iban'] = ts('IBAN is required');
+      } elseif (!$ibanValidator->Verify($values['iban'])) {
+        $errors['iban'] = ts("'".$values['iban']."' is not a valid IBAN");
+      }
+      if (empty($values['bic'])) {
+        $errors['bic'] = ts('BIC is required');
+      }
+      
+      //check if IBAN belongs to another contact
+      $accounts = CRM_Ibanaccounts_Ibanaccounts::findIBANByIban($values['iban']);
+      $foundAtOtherContact = false;
+      $otherContactId = false;
+      $foundAtSelf = false;
+      foreach($accounts as $account) {
+        if ($account['contact_id'] == $contactId) {
+          $foundAtSelf = true;
+        } else {
+          $foundAtOtherContact = true;
+          $otherContactId = $account['contact_id'];
+        }
+      }
+      
+      if ($foundAtOtherContact && !$foundAtSelf && $otherContactId) {
+        $displayName = CRM_Contact_BAO_Contact::displayName($otherContactId);
+        $url = CRM_Utils_System::url('civicrm/contact/view', array('cid' => $otherContactId));
+        $errors['iban'] = ts('IBAN belongs to <a href="%1">%2</a>', array(
+          1 => $url,
+          2 => $displayName
+        ));
+      } elseif ($foundAtOtherContact && !$foundAtSelf) {
+        $errors['iban'] = ts('IBAN belongs to another contact');
+      }
+    }
+  }
+  
   public function postProcess() {
     $config = CRM_Ibanaccounts_Config::singleton();
     $table = $config->getIbanMembershipCustomGroupValue('table_name');

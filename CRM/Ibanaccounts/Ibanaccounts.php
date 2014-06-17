@@ -37,6 +37,36 @@ class CRM_Ibanaccounts_Ibanaccounts {
     return $return;
   }
   
+  /*
+   * Returns an array with all IBAN number
+   * 
+   * Return array consist of the following details per IBAN
+   * id => id of the IBAN
+   * contact_id => contact ID
+   * iban => the IBAN number
+   * bic => the BIC number
+   */
+  public static function findIBANByIban($iban) {
+    $config = CRM_Ibanaccounts_Config::singleton();
+    $table = $config->getIbanCustomGroupValue('table_name');
+    $iban_field = $config->getIbanCustomFieldValue('column_name');
+    $bic_field = $config->getBicCustomFieldValue('column_name');
+    $sql = "SELECT * FROM `".$table."`  WHERE `".$iban_field."`  = %1";
+    $dao = CRM_Core_DAO::executeQuery($sql, array(
+      '1' => array($iban, 'String'),
+    ));
+    
+    $return = array();
+    while($dao->fetch()) {
+      $account['id'] = $dao->id;
+      $account['contact_id'] = $dao->entity_id;
+      $account['iban'] = $dao->$iban_field;
+      $account['bic'] = $dao->$bic_field;
+      $return[$dao->id] = $account;
+    }
+    return $return;
+  }
+  
   /**
    * Saves an IBAN Number for a contact
    * 

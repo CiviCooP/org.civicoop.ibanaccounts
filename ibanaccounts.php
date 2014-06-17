@@ -27,10 +27,13 @@ function ibanaccounts_civicrm_validateForm( $formName, &$fields, &$files, &$form
     foreach($fields as $key => $value) {
       if (strpos($key, "custom_".$config->getIbanCustomFieldValue('id'))===0) {
         if (!$iban->Verify($value)) {
-          $errors[$key] = ts("'".$value."' is not valid IBAN");
+          $errors[$key] = ts("'".$value."' is not a valid IBAN");
         }
       }
     }
+  } elseif ($formName == 'CRM_Member_Form_Membership') {
+   $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
+   $membership->validateForm($fields, $files, $errors);
   }
 }
 
