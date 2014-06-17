@@ -17,6 +17,11 @@ class CRM_Ibanaccounts_Ibanaccounts {
    * bic => the BIC number
    */
   public static function IBANForContact($contactId) {
+    
+    if (empty($contactId)) {
+      return array();
+    }
+    
     $config = CRM_Ibanaccounts_Config::singleton();
     $table = $config->getIbanCustomGroupValue('table_name');
     $iban_field = $config->getIbanCustomFieldValue('column_name');

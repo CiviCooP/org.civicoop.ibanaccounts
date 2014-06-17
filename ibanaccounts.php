@@ -59,6 +59,12 @@ function ibanaccounts_civicrm_buildForm($formName, &$form) {
  }
 }
 
+/**
+ * 
+ * Implementation of hook_civicrm_postProcess
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postProcess
+ */
 function ibanaccounts_civicrm_postProcess( $formName, &$form ) {
   if ($formName == 'CRM_Member_Form_Membership') {
    $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
@@ -68,6 +74,22 @@ function ibanaccounts_civicrm_postProcess( $formName, &$form ) {
    $contribution = new CRM_Ibanaccounts_Buildform_Contribution($form);
    $contribution->postProcess();
  }
+}
+
+/**
+ * Implementation of hook_civicrm_post
+ * 
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_post
+ * @param type $op
+ * @param type $objectName
+ * @param type $objectId
+ * @param type $objectRef
+ */
+function ibanaccounts_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
+  if ($objectName == 'MembershipPayment') {
+    $membership_payment = new CRM_Ibanaccounts_Post_MembershipPayment();
+    $membership_payment->post($op, $objectRef);
+  }
 }
 
 /**

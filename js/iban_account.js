@@ -12,9 +12,13 @@ IBAN_Account.prototype.contactId = false;
 
 IBAN_Account.prototype.init = function(contactId) {
     this.contactId = contactId;
-    cj(this.iban_custom_field_block).remove(); //remove the custom fields for iban
+    this.hideCustomData();
     this.initEventHandlers(this);
 };
+
+IBAN_Account.prototype.hideCustomData = function() {
+    cj(this.iban_custom_field_block).remove(); //remove the custom fields for iban
+}
 
 IBAN_Account.prototype.retrieveContactId = function() {
     if (cj(this.contactElement)) {

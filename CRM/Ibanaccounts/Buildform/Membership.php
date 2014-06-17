@@ -14,7 +14,7 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
     }
 
     //check if contribution is recorded for someone else
-    if (isset($values['contribution_contact_select_id']) && isset($values['contribution_contact_select_id'][1])) {
+    if (isset($values['contribution_contact_select_id']) && isset($values['contribution_contact_select_id'][1]) && !empty($values['contribution_contact_select_id'][1])) {
       $contactId = $values['contribution_contact_select_id'][1];
     } elseif (isset($values['contact_select_id']) && isset($values['contact_select_id'][1])) {
       $contactId = $values['contact_select_id'][1];
@@ -23,6 +23,10 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
   }
 
   public function postProcess() {
+    if ($this->form->getVar('_action') == CRM_Core_Action::DELETE) {
+      return;
+    }
+    
     $config = CRM_Ibanaccounts_Config::singleton();
     $table = $config->getIbanMembershipCustomGroupValue('table_name');
     $iban_field = $config->getIbanMembershipCustomFieldValue('column_name');
@@ -57,6 +61,15 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
             '2' => array($iban, 'String'),
             '3' => array($bic, 'String'),
       ));
+      
+      //also record iban information on the contribution record
+      $membership_payment = new CRM_Member_BAO_MembershipPayment();
+      $membership_payment->membership_id = $mid;
+      if ($membership_payment->find(true)) {
+        $postMembershipPayment = new CRM_Ibanaccounts_Post_MembershipPayment();
+        $postMembershipPayment->clearIban($membership_payment->contribution_id);
+        $postMembershipPayment->saveIban($membership_payment->contribution_id, $iban, $bic);
+      }
     }
   }
 
