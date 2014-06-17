@@ -7,21 +7,23 @@ class CRM_Ibanaccounts_Upgrader extends CRM_Ibanaccounts_Upgrader_Base {
 
 
   public function install() {
-    $this->executeSqlFile('sql/install.sql');
     $this->executeCustomDataFile('xml/iban.xml');
+    $this->executeCustomDataFile('xml/iban_membership.xml');
   }
 
   public function uninstall() {
    $this->deleteCustomGroup('IBAN');
-   $this->executeSqlFile('sql/uninstall.sql');
+   $this->deleteCustomGroup('IBAN_Membership');
   }
   
   public function enable() {
     $this->enableCustomGroup('IBAN', true);
+    $this->enableCustomGroup('IBAN_Membership', true);
   }
   
   public function disable() {
     $this->enableCustomGroup('IBAN', false);
+    $this->enableCustomGroup('IBAN_Membership', false);
   }
   
   protected function deleteCustomGroup($group_name) {
