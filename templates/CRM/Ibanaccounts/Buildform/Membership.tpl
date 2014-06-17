@@ -17,7 +17,8 @@
 {literal}
 cj(function() {
     cj('tr.crm-membership-form-block-total_amount').after('{/literal}{$iban_account|escape:'javascript'}{literal}');
-    IBAN_Membership.init('{/literal}{$snippet.contact_id}{literal}');
+    var iban_membership = new IBAN_Membership();
+    iban_membership.init('{/literal}{$snippet.contact_id}{literal}');
 });
 {/literal}
 </script>

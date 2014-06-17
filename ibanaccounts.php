@@ -35,6 +35,10 @@ function ibanaccounts_civicrm_validateForm( $formName, &$fields, &$files, &$form
    $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
    $membership->validateForm($fields, $files, $errors);
   }
+  if ($formName == 'CRM_Contribute_Form_Contribution') {
+   $contribution = new CRM_Ibanaccounts_Buildform_Contribution($form);
+   $contribution->validateForm($fields, $files, $errors);
+  }
 }
 
 /**
@@ -49,6 +53,10 @@ function ibanaccounts_civicrm_buildForm($formName, &$form) {
    $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
    $membership->parse();
  } 
+ if ($formName == 'CRM_Contribute_Form_Contribution') {
+   $contribution = new CRM_Ibanaccounts_Buildform_Contribution($form);
+   $contribution->parse();
+ }
 }
 
 function ibanaccounts_civicrm_postProcess( $formName, &$form ) {
@@ -56,6 +64,10 @@ function ibanaccounts_civicrm_postProcess( $formName, &$form ) {
    $membership = new CRM_Ibanaccounts_Buildform_Membership($form);
    $membership->postProcess();
   }
+  if ($formName == 'CRM_Contribute_Form_Contribution') {
+   $contribution = new CRM_Ibanaccounts_Buildform_Contribution($form);
+   $contribution->postProcess();
+ }
 }
 
 /**

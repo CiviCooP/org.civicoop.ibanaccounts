@@ -15,6 +15,7 @@ class CRM_Ibanaccounts_Config {
   protected function __construct() {
     $this->custom_groups['IBAN'] = civicrm_api3('CustomGroup', 'getsingle', array('name' => 'IBAN'));
     $this->custom_groups['IBAN_Membership'] = civicrm_api3('CustomGroup', 'getsingle', array('name' => 'IBAN_Membership'));
+    $this->custom_groups['IBAN_Contribution'] = civicrm_api3('CustomGroup', 'getsingle', array('name' => 'IBAN_Contribution'));
     
     //load all the fields for every custom group
     foreach($this->custom_groups as $gname => $group) {
@@ -45,6 +46,10 @@ class CRM_Ibanaccounts_Config {
     return $this->custom_groups['IBAN_Membership'][$field];
   }
   
+  public function getIbanContributionCustomGroupValue($field='id') {
+    return $this->custom_groups['IBAN_Contribution'][$field];
+  }
+  
   public function getIbanCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN']['IBAN'][$field];
   }
@@ -54,11 +59,19 @@ class CRM_Ibanaccounts_Config {
   }
   
   public function getIbanMembershipCustomFieldValue($field='id') {
-    return $this->custom_fields['IBAN']['IBAN'][$field];
+    return $this->custom_fields['IBAN_Membership']['IBAN'][$field];
   }
   
   public function getBicMembershipCustomFieldValue($field='id') {
-    return $this->custom_fields['IBAN']['BIC'][$field];
+    return $this->custom_fields['IBAN_Membership']['BIC'][$field];
+  }
+  
+  public function getIbanContributionCustomFieldValue($field='id') {
+    return $this->custom_fields['IBAN_Contribution']['IBAN'][$field];
+  }
+  
+  public function getBicContributionCustomFieldValue($field='id') {
+    return $this->custom_fields['IBAN_Contribution']['BIC'][$field];
   }
   
 }
