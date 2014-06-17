@@ -21,14 +21,14 @@ IBAN_Account.prototype.hideCustomData = function() {
 }
 
 IBAN_Account.prototype.retrieveContactId = function() {
-    if (cj(this.contactElement)) {
+    if (cj(this.contactHiddenElement) && cj(this.contactHiddenElement).val()) {
         return cj(this.contactHiddenElement).val();
     }
     return this.contactId;
 };
 
 IBAN_Account.prototype.retrieveIbanAccountsForContact = function(contactId) {
-    if (contactId == this.currentContactId) {
+    if (contactId === this.currentContactId) {
         return;
     }
     this.currentConatctId = contactId;

@@ -20,6 +20,7 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
     if ($this->form->getVar('_action') == CRM_Core_Action::DELETE) {
       return;
     }
+    
     //retrieve the contact ID for the IBAN
     $contactId = $this->getContactIdForIban($values);
 
