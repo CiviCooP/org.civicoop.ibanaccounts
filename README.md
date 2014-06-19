@@ -7,4 +7,4 @@ for contribution and membership payments
 This extension stores the information in custom fields but uses custom screens 
 to enter the data. 
 
-See the [hooks](docs/hooks.md)
+See the [hooks](doc/hooks.md)
