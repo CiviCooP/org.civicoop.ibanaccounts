@@ -20,7 +20,10 @@
         <tr>
             <td>{$account.iban_human}</td>
             <td>{$account.bic}</td>
-            <td></td>
+            <td>
+                {assign var='delete_q' value='action=delete&cid='|cat:$contactId|cat:'&iban='|cat:$account.iban}
+                <a href="{crmURL p='civicrm/contact/ibanaccount/view' q=$delete_q h=0}" class="" onclick="return confirm('{ts}Are you sure?{/ts}');">{ts}Delete{/ts}</a>
+            </td>
         </tr>
     {/foreach}
 </table>

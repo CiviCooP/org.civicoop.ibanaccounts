@@ -3,6 +3,27 @@
 require_once 'ibanaccounts.civix.php';
 
 /**
+ * Check if an iban is in use by a membership
+ * 
+ * @param type $iban
+ */
+function ibanaccounts_civicrm_iban_usages($iban) {
+  $config = CRM_Ibanaccounts_Config::singleton();
+  $table = $config->getIbanMembershipCustomGroupValue('table_name');
+  $iban_field = $config->getIbanMembershipCustomFieldValue('column_name');
+  
+  $sql = "SELECT `m`.`id` AS `id`, `mtype`.`name` FROM `".$table."` `i` INNER JOIN `civicrm_membership` `m` ON `i`.`entity_id`  = `m`.`id` INNER JOIN `civicrm_membership_type` `mtype` ON `m`.`membership_type_id`  = `mtype`.`id` WHERE `i`.`".$iban_field."` = %1";
+  $dao = CRM_Core_DAO::executeQuery($sql, array('1' => array($iban, 'String')));
+  $return = array();
+  while($dao->fetch()) {
+    $return['civicrm_membership'][$dao->id] = ts("IBAN Account is used for membership %1", array(1 => $dao->name));
+  }
+  return $return;
+} 
+
+
+
+/**
  * Implementatio of hook__civicrm_tabs
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_tabs
  */

@@ -16,6 +16,11 @@ class CRM_Ibanaccounts_Form_IbanAccount extends CRM_Core_Form {
     
     $this->_contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
     $this->assign('contact_display_name', CRM_Contact_BAO_Contact::displayName($this->_contactId));
+    
+    //set user context
+    $session = CRM_Core_Session::singleton();
+    $userContext = CRM_Utils_System::url('civicrm/contact/view', 'cid='.$this->_contactId.'&selectedChild=iban_accounts&reset=1');
+    $session->pushUserContext($userContext);
   }
   
   
@@ -26,6 +31,7 @@ class CRM_Ibanaccounts_Form_IbanAccount extends CRM_Core_Form {
     // add form elements
     $this->add('text', 'iban', ts('IBAN'), '', true);
     $this->add('text', 'bic', ts('BIC'), '', true);
+    $this->add('hidden', 'cid', $this->_contactId);
     
     $this->addButtons(array(
       array(

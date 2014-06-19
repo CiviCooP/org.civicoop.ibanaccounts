@@ -138,4 +138,53 @@ class CRM_Ibanaccounts_Ibanaccounts {
     return false;
   }
   
+  /**
+   * Returns an array with usages for the IBAN account.
+   * 
+   * The array contains description for uses of the IBAN account e.g.:
+   * array(
+   *  'IBAN account in use by membership',
+   * )
+   * 
+   * If the iban account is not in use by any entity then the array should be empty and the IBAN could be deleted safely
+   * 
+   * @param type $iban
+   * @return array
+   */
+  public static function getIBANUsages($iban) {
+    
+    $iban_class = new IBAN($iban);
+    $iban_system = $iban_class->MachineFormat();
+    
+    $hooks = CRM_Utils_Hook::singleton();
+    $usages = $hooks->invoke(1, $iban_system, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_iban_usages');
+    if (!is_array($usages)) {
+      $usages = array();
+    }
+    $messages = array();
+    foreach($usages as $entities) {
+      foreach($entities as $entity) {
+        $messages[] = $entity;
+      }
+    }
+    return $messages;
+  }
+  
+  public static function removeIban($iban, $contactId) {
+    $iban_class = new IBAN($iban);
+    $iban_system = $iban_class->MachineFormat();
+    
+    $hooks = CRM_Utils_Hook::singleton();
+    $hooks->invoke(2, $iban_system, $contactId, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_remove_iban');
+    
+    $config = CRM_Ibanaccounts_Config::singleton();
+    $table = $config->getIbanCustomGroupValue('table_name');
+    $iban_field = $config->getIbanCustomFieldValue('column_name');
+    $sql = "DELETE FROM `".$table."` WHERE `entity_id` = %1 AND `".$iban_field."` = %2;" ;
+    $dao = CRM_Core_DAO::executeQuery($sql, array(
+      '1' => array($contactId, 'Integer'),
+      '2' => array($iban_system, 'String'),
+    ));
+  }
+  
 }
