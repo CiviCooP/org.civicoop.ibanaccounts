@@ -27,49 +27,6 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
     $this->validateIbanBicFields($values, 'iban_account', 'iban', 'bic', $errors, $contactId);
   }
 
-  /**
-   * Returns an empty string or an error message
-   * 
-   * @param type $iban
-   */
-  protected function validateIbanField($iban, $contactId) {
-    require_once('php-iban/oophp-iban.php');
-    $ibanValidator = new IBAN();
-
-    //a new iban account is provided
-    if (empty($iban)) {
-      return ts('IBAN is required');
-    } elseif (!$ibanValidator->Verify($iban)) {
-      return ts("'" . $iban . "' is not a valid IBAN");
-    }
-
-    //check if IBAN belongs to another contact
-    $accounts = CRM_Ibanaccounts_Ibanaccounts::findIBANByIban($iban);
-    $foundAtOtherContact = false;
-    $otherContactId = false;
-    $foundAtSelf = false;
-    foreach ($accounts as $account) {
-      if ($account['contact_id'] == $contactId) {
-        $foundAtSelf = true;
-      } else {
-        $foundAtOtherContact = true;
-        $otherContactId = $account['contact_id'];
-      }
-    }
-
-    if ($foundAtOtherContact && !$foundAtSelf && $otherContactId) {
-      $displayName = CRM_Contact_BAO_Contact::displayName($otherContactId);
-      $url = CRM_Utils_System::url('civicrm/contact/view', array('cid' => $otherContactId));
-      return ts('IBAN belongs to <a href="%1">%2</a>', array(
-        1 => $url,
-        2 => $displayName
-      ));
-    } elseif ($foundAtOtherContact && !$foundAtSelf) {
-      return ts('IBAN belongs to another contact');
-    }
-    return "";
-  }
-
   protected function validateIbanBicFields($values, $account_field, $iban_field, $bic_field, &$errors, $contactId) {
     $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
     $iban_account_id = isset($values[$account_field]) ? $values[$account_field] : false;
@@ -79,7 +36,7 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
         $errors[$bic_field] = ts('BIC is required');
       }
 
-      $iban_error = $this->validateIbanField($values[$iban_field], $contactId);
+      $iban_error = CRM_Ibanaccounts_Validator::validateIbanField($values[$iban_field], $contactId);
       if (!empty($iban_error)) {
         $errors[$iban_field] = $iban_error;
       }

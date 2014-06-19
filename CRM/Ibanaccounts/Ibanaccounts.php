@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__.'./../../php-iban/oophp-iban.php');
+
 /* 
  * Retrieve and save IBAN accounts
  * 
@@ -16,8 +18,7 @@ class CRM_Ibanaccounts_Ibanaccounts {
    * iban => the IBAN number
    * bic => the BIC number
    */
-  public static function IBANForContact($contactId) {
-    
+  public static function IBANForContact($contactId) {        
     if (empty($contactId)) {
       return array();
     }
@@ -33,9 +34,12 @@ class CRM_Ibanaccounts_Ibanaccounts {
     
     $return = array();
     while($dao->fetch()) {
+      $iban = new IBAN($dao->$iban_field);
+      
       $account['id'] = $dao->id;
       $account['contact_id'] = $dao->entity_id;
-      $account['iban'] = $dao->$iban_field;
+      $account['iban'] = $iban->MachineFormat();
+      $account['iban_human'] = $iban->HumanFormat();
       $account['bic'] = $dao->$bic_field;
       $return[$dao->id] = $account;
     }
@@ -85,6 +89,9 @@ class CRM_Ibanaccounts_Ibanaccounts {
       return;
     }
     
+    $iban_class = new IBAN($iban);
+    $iban_system = $iban_class->MachineFormat();
+    
     $id = self::getIdByIBANAndContactId($iban, $contactId);
     if ($id) {
       //iban number already exist
@@ -99,7 +106,7 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $sql = "INSERT INTO `".$table."` (`entity_id`, `".$iban_field."`, `".$bic_field."`) VALUES (%1, %2, %3);" ;
     $dao = CRM_Core_DAO::executeQuery($sql, array(
       '1' => array($contactId, 'Integer'),
-      '2' => array($iban, 'String'),
+      '2' => array($iban_system, 'String'),
       '3' => array($bic, 'String'),
     ));
     

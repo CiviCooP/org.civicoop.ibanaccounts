@@ -3,6 +3,35 @@
 require_once 'ibanaccounts.civix.php';
 
 /**
+ * Implementatio of hook__civicrm_tabs
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_tabs
+ */
+function ibanaccounts_civicrm_tabs(&$tabs, $contactID) {
+  $config = CRM_Ibanaccounts_Config::singleton();
+  
+  //unset the tab for iban accounts via custom fields and set our own tab for 
+  //display the iban accounts
+  $tab_id = 'custom_'.$config->getIbanCustomGroupValue('id'); 
+  foreach($tabs as $key => $tab) {
+   if ($tab['id'] == $tab_id) {
+     unset($tabs[$key]);
+   } 
+  }
+  
+  $url = CRM_Utils_System::url('civicrm/contact/ibanaccount/view', "cid=$contactID&snippet=1");
+
+  //Count rules
+  $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactID);
+  $tabs[] = array(
+    'id' => 'iban_accounts',
+    'url' => $url,
+    'count' => count($accounts),
+    'title' => ts('IBAN Accounts'),
+    'weight' => -100
+  );
+}
+
+/**
  * Validate the entered IBAN account number
  * 
  * 

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/contact/ibanaccount/view</path>
+    <page_callback>CRM_Ibanaccounts_Page_IbanAccount</page_callback>
+    <title>IbanAccount</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/contact/ibanaccount/add</path>
+    <page_callback>CRM_Ibanaccounts_Form_IbanAccount</page_callback>
+    <title>IbanAccount</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
