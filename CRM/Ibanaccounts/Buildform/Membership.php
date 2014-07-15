@@ -21,6 +21,17 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
     }
     return $contactId;
   }
+  
+  public function validateForm(&$values, &$files, &$errors) {
+    if ($this->form->getVar('_action') == CRM_Core_Action::DELETE) {
+      return;
+    }
+    
+    //only do validation when a membership payment is recorded.
+    if (isset($values['record_contribution'])) {
+      parent::validateForm($values, $files, $errors);
+    }
+  }
 
   public function postProcess() {
     if ($this->form->getVar('_action') == CRM_Core_Action::DELETE) {
