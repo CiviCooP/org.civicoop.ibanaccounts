@@ -15,7 +15,7 @@
       <table_name>civicrm_value_iban</table_name>
       <is_multiple>1</is_multiple>
       <collapse_adv_display>0</collapse_adv_display>
-      <created_date>2014-06-10 12:43:59</created_date>
+      <created_date>20140610124359</created_date>
       <is_reserved>0</is_reserved>
     </CustomGroup>
   </CustomGroups>
