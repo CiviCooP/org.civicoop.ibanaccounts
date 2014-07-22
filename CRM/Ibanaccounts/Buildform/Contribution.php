@@ -28,7 +28,7 @@ class CRM_Ibanaccounts_Buildform_Contribution extends CRM_Ibanaccounts_Buildform
   
   protected function getContactIdForIban($values) {
     $contactId = '';
-    if (!empty($this->form->getVar('_contactID'))) {
+    if ($this->form && !empty($this->form->getVar('_contactID'))) {
       $contactId = $this->form->getVar('_contactID');
     }
     return $contactId;
