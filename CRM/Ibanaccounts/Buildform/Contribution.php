@@ -59,8 +59,10 @@ class CRM_Ibanaccounts_Buildform_Contribution extends CRM_Ibanaccounts_Buildform
     $iban_account_id = isset($values['iban_account']) ? $values['iban_account'] : false;
 
     if ($iban_account_id == -1 || !isset($accounts[$iban_account_id])) {
-      $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $contactId);
-      $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
+      if (isset($values['iban']) && isset($values['bic'])) {
+        $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $contactId);
+        $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
+      }
     }
 
     if (isset($accounts[$iban_account_id])) {
