@@ -31,7 +31,7 @@ IBAN_Membership.prototype.initEventHandlers = function(ctx) {
 
     cj(this.contributionDifferentContactElement + ':checkbox').change(function(e) {
         if (!cj(this.contributionDifferentContactElement).is(':checked')) {
-            var contactId = this.retrieveMembershipContactId();
+            var contactId = this.retrieveContactId();
             this.retrieveIbanAccountsForContact(contactId);
         } else {
             var contactId = cj(this.contributionContactHiddenElement).val();
