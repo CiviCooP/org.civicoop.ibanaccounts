@@ -100,15 +100,15 @@ class CRM_Ibanaccounts_Ibanaccounts {
     //only save when IBAN number doesn't exist yet
     
     $config = CRM_Ibanaccounts_Config::singleton();
-    $table = $config->getIbanCustomGroupValue('table_name');
-    $iban_field = $config->getIbanCustomFieldValue('column_name');
-    $bic_field = $config->getBicCustomFieldValue('column_name');
-    $sql = "INSERT INTO `".$table."` (`entity_id`, `".$iban_field."`, `".$bic_field."`) VALUES (%1, %2, %3);" ;
-    $dao = CRM_Core_DAO::executeQuery($sql, array(
-      '1' => array($contactId, 'Integer'),
-      '2' => array($iban_system, 'String'),
-      '3' => array($bic, 'String'),
-    ));
+    $iban_field = 'custom_'.$config->getIbanCustomFieldValue('id');
+    $bic_field = 'custom_'.$config->getBicCustomFieldValue('id');
+    
+    $params = array();
+    $params['entity_id'] = $contactId;
+    $params[$iban_field] = $iban_system;
+    $params[$bic_field] = $bic;
+    
+    civicrm_api3('CustomValue', 'Create', $params);
     
     return self::getIdByIBANAndContactId($iban, $contactId);
   }
@@ -178,13 +178,18 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $hooks->invoke(2, $iban_system, $contactId, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_remove_iban');
     
     $config = CRM_Ibanaccounts_Config::singleton();
-    $table = $config->getIbanCustomGroupValue('table_name');
-    $iban_field = $config->getIbanCustomFieldValue('column_name');
-    $sql = "DELETE FROM `".$table."` WHERE `entity_id` = %1 AND `".$iban_field."` = %2;" ;
-    $dao = CRM_Core_DAO::executeQuery($sql, array(
-      '1' => array($contactId, 'Integer'),
-      '2' => array($iban_system, 'String'),
-    ));
+    $iban_field_id = $config->getIbanCustomFieldValue('id');
+    
+    //fetch id
+    $contactParams = array();
+    $contactParams['id'] = $contactId;
+    $contactParams['custom_'.$iban_field_id] = $iban;
+    $contactParams['return.custom_'.$iban_field_id] = 1;
+    $contact = civicrm_api3('Contact', 'getsingle', $contactParams);
+    //extract the custom value table id
+    $objectId = $contact[$config->getIbanCustomGroupValue('table_name').'_id'];
+    
+    CRM_Core_BAO_CustomValue::deleteCustomValue($objectId, $config->getIbanCustomGroupValue('id'));
   }
   
 }
