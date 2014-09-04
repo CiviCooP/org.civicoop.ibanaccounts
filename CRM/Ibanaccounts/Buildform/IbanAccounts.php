@@ -32,9 +32,6 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
     $iban_account_id = isset($values[$account_field]) ? $values[$account_field] : false;
 
     if ($iban_account_id === -1 || ($iban_account_id > 0 && !isset($accounts[$iban_account_id]))) {
-      if (empty($values[$bic_field])) {
-        $errors[$bic_field] = ts('BIC is required');
-      }
 
       $iban_error = CRM_Ibanaccounts_Validator::validateIbanField($values[$iban_field], $contactId);
       if (!empty($iban_error)) {
