@@ -1,6 +1,7 @@
 <?php
 
 require_once 'ibanaccounts.civix.php';
+require_once('php-iban/oophp-iban.php');
 
 /**
  * Check if an iban is in use by a membership
@@ -71,8 +72,7 @@ function ibanaccounts_civicrm_validateForm( $formName, &$fields, &$files, &$form
     if ($groupId != $config->getIbanCustomGroupValue('id')) {
       return;
     }
-    
-    require_once('php-iban/oophp-iban.php');
+
     $iban = new IBAN();
     foreach($fields as $key => $value) {
       if (strpos($key, "custom_".$config->getIbanCustomFieldValue('id'))===0) {
