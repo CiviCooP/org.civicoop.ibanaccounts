@@ -92,7 +92,7 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $iban_class = new IBAN($iban);
     $iban_system = $iban_class->MachineFormat();
     
-    $id = self::getIdByIBANAndContactId($iban, $contactId);
+    $id = self::getIdByIBANAndContactId($iban_system, $contactId);
     if ($id) {
       //iban number already exist
       return $id;
