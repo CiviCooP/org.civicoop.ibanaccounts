@@ -125,8 +125,11 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $table = $config->getIbanCustomGroupValue('table_name');
     $iban_field = $config->getIbanCustomFieldValue('column_name');
     
+    $iban_class = new IBAN($iban);
+    $iban_system = $iban_class->MachineFormat();
+    
     $sql = "SELECT * FROM `".$table."` WHERE `".$iban_field."` = %1";
-    $params[1] = array($iban, 'String');
+    $params[1] = array($iban_system, 'String');
     if ($contactId) {
       $sql .= " AND `entity_id` = %2";
       $params[2] = array($contactId, 'Integer');
