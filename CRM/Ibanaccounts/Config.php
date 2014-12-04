@@ -30,6 +30,8 @@ class CRM_Ibanaccounts_Config {
   
   /**
    * Singleton instanciated function
+   * 
+   * @return CRM_Ibanaccounts_Config
    */
   public static function singleton() {
     if (!self::$_instance) {

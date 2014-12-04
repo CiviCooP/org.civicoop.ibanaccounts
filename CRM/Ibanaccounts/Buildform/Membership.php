@@ -37,11 +37,6 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
     if ($this->form->getVar('_action') == CRM_Core_Action::DELETE) {
       return;
     }
-    
-    $config = CRM_Ibanaccounts_Config::singleton();
-    $table = $config->getIbanMembershipCustomGroupValue('table_name');
-    $iban_field = $config->getIbanMembershipCustomFieldValue('column_name');
-    $bic_field = $config->getBicMembershipCustomFieldValue('column_name');
 
     //retrieve the values and the membershipIDs
     $membership_ids = $this->form->getVar('_membershipIDs');
@@ -50,38 +45,9 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
 
     //retrieve the contact ID for the IBAN
     $contactId = $this->getContactIdForIban($values);
-
-    //remove the current bank account
-    CRM_Core_DAO::executeQuery("DELETE FROM `" . $table . "` WHERE `entity_id` = %1", array(1 => array($mid, 'Integer')));
-
-    $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
     $iban_account_id = isset($values['iban_account']) ? $values['iban_account'] : false;
-
-    if ($iban_account_id == -1 || !isset($accounts[$iban_account_id])) {
-      $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $contactId);
-      $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
-    }
-
-    if (isset($accounts[$iban_account_id])) {
-      $iban = $accounts[$iban_account_id]['iban'];
-      $bic = $accounts[$iban_account_id]['bic'];
-
-      $sql = "INSERT INTO `" . $table . "` (`entity_id`, `" . $iban_field . "`, `" . $bic_field . "`) VALUES (%1, %2, %3);";
-      $dao = CRM_Core_DAO::executeQuery($sql, array(
-            '1' => array($mid, 'Integer'),
-            '2' => array($iban, 'String'),
-            '3' => array($bic, 'String'),
-      ));
-      
-      //also record iban information on the contribution record
-      $membership_payment = new CRM_Member_BAO_MembershipPayment();
-      $membership_payment->membership_id = $mid;
-      if ($membership_payment->find(true)) {
-        $postMembershipPayment = new CRM_Ibanaccounts_Post_MembershipPayment();
-        $postMembershipPayment->clearIban($membership_payment->contribution_id);
-        $postMembershipPayment->saveIban($membership_payment->contribution_id, $iban, $bic);
-      }
-    }
+    
+    CRM_Ibanaccounts_Ibanaccounts::saveIbanForMembership($mid, $contactId, $values['iban'], $values['bic'], $iban_account_id);
   }
 
   protected function getName() {
