@@ -154,13 +154,13 @@ class CRM_Ibanaccounts_Ibanaccounts {
    * @param type $iban
    * @return array
    */
-  public static function getIBANUsages($iban) {
+  public static function getIBANUsages($iban, $contactId = false) {
     
     $iban_class = new IBAN($iban);
     $iban_system = $iban_class->MachineFormat();
     
     $hooks = CRM_Utils_Hook::singleton();
-    $usages = $hooks->invoke(1, $iban_system, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_iban_usages');
+    $usages = $hooks->invoke(2, $iban_system, $contactId, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_iban_usages');
     if (!is_array($usages)) {
       $usages = array();
     }

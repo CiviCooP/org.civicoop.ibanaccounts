@@ -31,7 +31,7 @@ class CRM_Ibanaccounts_Page_IbanAccount extends CRM_Core_Page {
     $iban  = CRM_Utils_Request::retrieve('iban', 'String', $this, TRUE);
     $session = CRM_Core_Session::singleton();
     
-    $usages = CRM_Ibanaccounts_Ibanaccounts::getIBANUsages($iban);
+    $usages = CRM_Ibanaccounts_Ibanaccounts::getIBANUsages($iban, $this->_contactId);
     if (count($usages)) {
       $message = ts('IBAN Account is in use').'<br><br>';
       foreach($usages as $usage) {

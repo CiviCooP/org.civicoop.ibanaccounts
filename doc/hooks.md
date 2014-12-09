@@ -10,7 +10,7 @@ If an IBAN account is used by an entity then this iban account cannot be removed
 
 **Spec**
 
-    hook_civicrm_iban_usages($iban);
+    hook_civicrm_iban_usages($iban, $contactId = false);
 
 **Return value**
 
@@ -18,7 +18,7 @@ The hook should return an array with the entity as a key and the id as a key and
 
 **Example**
 
-    mymodule_civicrm_iban_usages($iban)
+    mymodule_civicrm_iban_usages($iban, $contactId = false)
         $sql = "SELECT membership.id, membership.name from civicrm_membership where iban = %1";
         $dao = CRM_Core_DAO::executeQuery($sql, array('1' => array($iban, 'String')));
         $return = array();

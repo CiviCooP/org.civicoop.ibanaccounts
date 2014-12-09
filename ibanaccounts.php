@@ -8,16 +8,32 @@ require_once('php-iban/oophp-iban.php');
  * 
  * @param type $iban
  */
-function ibanaccounts_civicrm_iban_usages($iban) {
+function ibanaccounts_civicrm_iban_usages($iban, $contactId = false) {
   $config = CRM_Ibanaccounts_Config::singleton();
   $table = $config->getIbanMembershipCustomGroupValue('table_name');
   $iban_field = $config->getIbanMembershipCustomFieldValue('column_name');
   
-  $sql = "SELECT `m`.`id` AS `id`, `mtype`.`name` FROM `".$table."` `i` INNER JOIN `civicrm_membership` `m` ON `i`.`entity_id`  = `m`.`id` INNER JOIN `civicrm_membership_type` `mtype` ON `m`.`membership_type_id`  = `mtype`.`id` WHERE `i`.`".$iban_field."` = %1";
-  $dao = CRM_Core_DAO::executeQuery($sql, array('1' => array($iban, 'String')));
+  $sql = "SELECT `m`.`id` AS `id`, `mtype`.`name` FROM `".$table."` `i` INNER JOIN `civicrm_membership` `m` ON `i`.`entity_id`  = `m`.`id` INNER JOIN `civicrm_membership_type` `mtype` ON `m`.`membership_type_id`  = `mtype`.`id` WHERE `i`.`".$iban_field."` = %1 AND `m`.`contact_id` = %2";
+  $dao = CRM_Core_DAO::executeQuery($sql, array(
+    '1' => array($iban, 'String'),
+    '2' => array($contactId, 'Integer'),
+  ));
   $return = array();
   while($dao->fetch()) {
     $return['civicrm_membership'][$dao->id] = ts("IBAN Account is used for membership %1", array(1 => $dao->name));
+  }
+  
+  //check if iban is in use at contribution level
+  $table = $config->getIbanContributionCustomGroupValue('table_name');
+  $iban_field = $config->getIbanContributionCustomFieldValue('column_name');
+  $sql = "SELECT COUNT(`m`.`id`) AS `contribution_count` FROM `".$table."` `i` INNER JOIN `civicrm_contribution` `m` ON `i`.`entity_id`  = `m`.`id` WHERE `i`.`".$iban_field."` = %1 AND `m`.`contact_id` = %2";
+  $dao = CRM_Core_DAO::executeQuery($sql, array(
+    '1' => array($iban, 'String'),
+    '2' => array($contactId, 'Integer'),
+  ));
+  $return = array();
+  while($dao->fetch() && $dao->contribution_count) {
+    $return['civicrm_contribution'][1] = ts("IBAN Account is used for %1 contributions", array(1 => $dao->contribution_count));
   }
   return $return;
 } 
