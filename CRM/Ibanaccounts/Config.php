@@ -11,6 +11,8 @@ class CRM_Ibanaccounts_Config {
   protected $custom_groups = array();
   
   protected $custom_fields = array();
+
+  protected $bicExtensionEnabled = false;
   
   protected function __construct() {
     $this->custom_groups['IBAN'] = civicrm_api3('CustomGroup', 'getsingle', array('name' => 'IBAN'));
@@ -26,6 +28,12 @@ class CRM_Ibanaccounts_Config {
         $this->custom_fields[$gname][$fname] = $field;
       }
     }
+
+    //check if org.project60.bic extension is installed
+    $statuses = CRM_Extension_System::singleton()->getManager()->getStatuses();
+    if (isset($statuses['org.project60.bic']) && $statuses['org.project60.bic'] == CRM_Extension_Manager::STATUS_INSTALLED) {
+      $this->bicExtensionEnabled = true;
+    }
   }
   
   /**
@@ -38,6 +46,18 @@ class CRM_Ibanaccounts_Config {
       self::$_instance = new CRM_Ibanaccounts_Config();
     }
     return self::$_instance;
+  }
+
+  /**
+   * Returns wether the project 60 BIC extension is enabled
+   *
+   * The project 60 extension makes it possible to autofill
+   * the BIC code based upon Iban
+   *
+   * @return bool
+   */
+  public function isProject60BICExtensionEnabled() {
+    return $this->bicExtensionEnabled;
   }
   
   public function getIbanCustomGroupValue($field='id') {

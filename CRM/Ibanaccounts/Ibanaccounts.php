@@ -107,6 +107,9 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $params['entity_id'] = $contactId;
     $params[$iban_field] = $iban_system;
     $params[$bic_field] = $bic;
+    if (empty($params[$bic_field])) {
+      $params[$bic_field] = CRM_Ibanaccounts_Utils_IbanToBic::getBic($params[$iban_field]);
+    }
     
     civicrm_api3('CustomValue', 'Create', $params);
     

@@ -6,7 +6,9 @@ require_once('php-iban/oophp-iban.php');
 /**
  * Check if an iban is in use by a membership
  * 
- * @param type $iban
+ * @param string $iban
+ * @param int|bool $contactId
+ * @return array
  */
 function ibanaccounts_civicrm_iban_usages($iban, $contactId = false) {
   $config = CRM_Ibanaccounts_Config::singleton();

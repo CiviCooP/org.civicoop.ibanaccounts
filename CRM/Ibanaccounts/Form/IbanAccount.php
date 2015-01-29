@@ -30,7 +30,7 @@ class CRM_Ibanaccounts_Form_IbanAccount extends CRM_Core_Form {
     
     // add form elements
     $this->add('text', 'iban', ts('IBAN'), '', true);
-    $this->add('text', 'bic', ts('BIC'), '', true);
+    $this->add('text', 'bic', ts('BIC'), '', false);
     $this->add('hidden', 'cid', $this->_contactId);
     
     $this->addButtons(array(
@@ -48,6 +48,10 @@ class CRM_Ibanaccounts_Form_IbanAccount extends CRM_Core_Form {
 
   function postProcess() {
     $values = $this->exportValues();
+
+    if (empty($values['bic'])) {
+      $values['bic'] = CRM_Ibanaccounts_Utils_IbanToBic::getBic($values['iban']);
+    }
     
     $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $this->_contactId);
     

@@ -27,7 +27,7 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
     $this->validateIbanBicFields($values, 'iban_account', 'iban', 'bic', $errors, $contactId);
   }
 
-  protected function validateIbanBicFields($values, $account_field, $iban_field, $bic_field, &$errors, $contactId) {
+  protected function validateIbanBicFields(&$values, $account_field, $iban_field, $bic_field, &$errors, $contactId) {
     $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
     $iban_account_id = isset($values[$account_field]) ? $values[$account_field] : false;
 
@@ -36,6 +36,8 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
       $iban_error = CRM_Ibanaccounts_Validator::validateIbanField($values[$iban_field], $contactId);
       if (!empty($iban_error)) {
         $errors[$iban_field] = $iban_error;
+      } elseif (empty($values[$bic_field])) {
+        $values[$bic_field] = CRM_Ibanaccounts_Utils_IbanToBic::getBic($values[$iban_field]);
       }
     }
   }
