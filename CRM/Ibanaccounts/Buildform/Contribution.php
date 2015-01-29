@@ -39,6 +39,7 @@ class CRM_Ibanaccounts_Buildform_Contribution extends CRM_Ibanaccounts_Buildform
     $table = $config->getIbanContributionCustomGroupValue('table_name');
     $iban_field = $config->getIbanContributionCustomFieldValue('column_name');
     $bic_field = $config->getBicContributionCustomFieldValue('column_name');
+    $tnv_field = $config->getTnvContributionCustomFieldValue('column_name');
     
     //retrieve the values and the membershipIDs
     $values = $this->form->controller->exportValues($this->form->getVar('_name'));
@@ -60,7 +61,7 @@ class CRM_Ibanaccounts_Buildform_Contribution extends CRM_Ibanaccounts_Buildform
 
     if ($iban_account_id == -1 || !isset($accounts[$iban_account_id])) {
       if (isset($values['iban']) && isset($values['bic'])) {
-        $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $contactId);
+        $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $values['tnv'], $contactId);
         $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
       }
     }
@@ -68,12 +69,14 @@ class CRM_Ibanaccounts_Buildform_Contribution extends CRM_Ibanaccounts_Buildform
     if (isset($accounts[$iban_account_id])) {
       $iban = $accounts[$iban_account_id]['iban'];
       $bic = $accounts[$iban_account_id]['bic'];
+      $tnv = $accounts[$iban_account_id]['tnv'];
 
-      $sql = "INSERT INTO `" . $table . "` (`entity_id`, `" . $iban_field . "`, `" . $bic_field . "`) VALUES (%1, %2, %3);";
+      $sql = "INSERT INTO `" . $table . "` (`entity_id`, `" . $iban_field . "`, `" . $bic_field . "`, `".$tnv_field."`) VALUES (%1, %2, %3, %4);";
       $dao = CRM_Core_DAO::executeQuery($sql, array(
             '1' => array($contribution_id, 'Integer'),
             '2' => array($iban, 'String'),
             '3' => array($bic, 'String'),
+            '4' => array($tnv, 'String'),
       ));
     }
   }

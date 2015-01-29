@@ -11,6 +11,10 @@
     <td class="label">{$form.bic.label}</td>
     <td>{$form.bic.html}</td>
 </tr>
+<tr class="crm-iban_account-form-block-tnv hiddenElement">
+    <td class="label">{$form.tnv.label}</td>
+    <td>{$form.tnv.html}</td>
+</tr>
 {/capture}
 
 <script type="text/javascript">

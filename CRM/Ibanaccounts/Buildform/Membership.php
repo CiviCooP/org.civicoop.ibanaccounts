@@ -47,7 +47,7 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
     $contactId = $this->getContactIdForIban($values);
     $iban_account_id = isset($values['iban_account']) ? $values['iban_account'] : false;
     
-    CRM_Ibanaccounts_Ibanaccounts::saveIbanForMembership($mid, $contactId, $values['iban'], $values['bic'], $iban_account_id);
+    CRM_Ibanaccounts_Ibanaccounts::saveIbanForMembership($mid, $contactId, $values['iban'], $values['bic'], $values['tnv'], $iban_account_id);
   }
 
   protected function getName() {

@@ -12,4 +12,10 @@
     <title>IbanAccount</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/contact/ibanaccount/edit</path>
+    <page_callback>CRM_Ibanaccounts_Form_EditIbanAccount</page_callback>
+    <title>IbanAccount</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

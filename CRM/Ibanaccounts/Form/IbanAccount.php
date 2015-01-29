@@ -31,6 +31,7 @@ class CRM_Ibanaccounts_Form_IbanAccount extends CRM_Core_Form {
     // add form elements
     $this->add('text', 'iban', ts('IBAN'), '', true);
     $this->add('text', 'bic', ts('BIC'), '', false);
+    $this->add('text', 'tnv', ts('Ten name van'), '', false);
     $this->add('hidden', 'cid', $this->_contactId);
     
     $this->addButtons(array(
@@ -53,7 +54,7 @@ class CRM_Ibanaccounts_Form_IbanAccount extends CRM_Core_Form {
       $values['bic'] = CRM_Ibanaccounts_Utils_IbanToBic::getBic($values['iban']);
     }
     
-    $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $this->_contactId);
+    $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $values['tnv'], $this->_contactId);
     
     parent::postProcess();
   }

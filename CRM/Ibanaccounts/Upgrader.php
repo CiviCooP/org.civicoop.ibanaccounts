@@ -12,6 +12,13 @@ class CRM_Ibanaccounts_Upgrader extends CRM_Ibanaccounts_Upgrader_Base {
     $this->executeCustomDataFile('xml/iban_contribution.xml');
   }
 
+  public function upgrade_1011() {
+    $this->executeCustomDataFile('xml/iban.xml');
+    $this->executeCustomDataFile('xml/iban_membership.xml');
+    $this->executeCustomDataFile('xml/iban_contribution.xml');
+    return true;
+  }
+
   public function uninstall() {
    $this->deleteCustomGroup('IBAN');
    $this->deleteCustomGroup('IBAN_Membership');

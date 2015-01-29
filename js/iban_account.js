@@ -56,10 +56,12 @@ IBAN_Account.prototype.initEventHandlers = function(ctx) {
         if (cj('#iban_account').val() == -1) {
             cj('tr.crm-iban_account-form-block-iban').removeClass('hiddenElement');
             cj('tr.crm-iban_account-form-block-bic').removeClass('hiddenElement');
+            cj('tr.crm-iban_account-form-block-tnv').removeClass('hiddenElement');
             cj('tr.crm-iban_account-form-block-iban #iban').focus();
         } else {
             cj('tr.crm-iban_account-form-block-iban').addClass('hiddenElement');
             cj('tr.crm-iban_account-form-block-bic').addClass('hiddenElement');
+            cj('tr.crm-iban_account-form-block-tnv').addClass('hiddenElement');
         }
     });
 

@@ -51,6 +51,9 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
 
       foreach ($accounts as $id => $account) {
         $options[$id] = $account['iban'];
+        if (!empty($account['tnv'])) {
+          $options[$id] .= '('.$account['tnv'].')';
+        }
       }
     }
     $options[-1] = ts('New account');
@@ -75,6 +78,7 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
     $this->form->add('select', 'iban_account', ts('IBAN Account'), $options);
     $this->form->add('text', 'iban', ts('IBAN'));
     $this->form->add('text', 'bic', ts('BIC'));
+    $this->form->add('text', 'tnv', ts('Ten name van'));
 
     $currentIbanAccount = $this->getCurrentIbanAccount($contactId);
 

@@ -51,6 +51,7 @@ class CRM_Ibanaccounts_Buildform_MembershipRenewal extends CRM_Ibanaccounts_Buil
     $table = $config->getIbanMembershipCustomGroupValue('table_name');
     $iban_field = $config->getIbanMembershipCustomFieldValue('column_name');
     $bic_field = $config->getBicMembershipCustomFieldValue('column_name');
+    $tnv_field = $config->getTnvMembershipCustomFieldValue('column_name');
 
     //retrieve the values and the membershipIDs
     $mid = $this->form->getVar('_id');
@@ -66,28 +67,34 @@ class CRM_Ibanaccounts_Buildform_MembershipRenewal extends CRM_Ibanaccounts_Buil
     $iban_account_id = isset($values['iban_account']) ? $values['iban_account'] : false;
 
     if ($iban_account_id == -1 || !isset($accounts[$iban_account_id])) {
-      $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $contactId);
+      $iban_account_id = CRM_Ibanaccounts_Ibanaccounts::saveIBANForContact($values['iban'], $values['bic'], $values['tnv'], $contactId);
       $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactId);
     }
 
     if (isset($accounts[$iban_account_id])) {
       $iban = $accounts[$iban_account_id]['iban'];
       $bic = $accounts[$iban_account_id]['bic'];
+      $tnv = $accounts[$iban_account_id]['tnv'];
 
-      $sql = "INSERT INTO `" . $table . "` (`entity_id`, `" . $iban_field . "`, `" . $bic_field . "`) VALUES (%1, %2, %3);";
+      $sql = "INSERT INTO `" . $table . "` (`entity_id`, `" . $iban_field . "`, `" . $bic_field . "`, `".$tnv_field."`) VALUES (%1, %2, %3, %4);";
       $dao = CRM_Core_DAO::executeQuery($sql, array(
             '1' => array($mid, 'Integer'),
             '2' => array($iban, 'String'),
             '3' => array($bic, 'String'),
+            '4' => array($tnv, 'String'),
       ));
       
       //also record iban information on the contribution record
       $membership_payment = new CRM_Member_BAO_MembershipPayment();
       $membership_payment->membership_id = $mid;
-      if ($membership_payment->find(true)) {
+      $membership_payment->find(false);
+      while($membership_payment->fetch()) {
         $postMembershipPayment = new CRM_Ibanaccounts_Post_MembershipPayment();
-        $postMembershipPayment->clearIban($membership_payment->contribution_id);
-        $postMembershipPayment->saveIban($membership_payment->contribution_id, $iban, $bic);
+        $isFutureContribution = CRM_Core_DAO::singleValueQuery("SELECT COUNT(*) FROM `civicrm_contribution` WHERE `id` = %1", array(1=>array($membership_payment->contribution_id, 'Integer')));
+        if ($isFutureContribution) {
+          $postMembershipPayment->clearIban($membership_payment->contribution_id);
+          $postMembershipPayment->saveIban($membership_payment->contribution_id, $iban, $bic, $tnv);
+        }
       }
     }
   }

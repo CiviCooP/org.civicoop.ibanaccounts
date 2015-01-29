@@ -79,6 +79,10 @@ class CRM_Ibanaccounts_Config {
   public function getBicCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN']['BIC'][$field];
   }
+
+  public function getTnvCustomFieldValue($field='id') {
+    return $this->custom_fields['IBAN']['tnv'][$field];
+  }
   
   public function getIbanMembershipCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN_Membership']['IBAN'][$field];
@@ -87,6 +91,10 @@ class CRM_Ibanaccounts_Config {
   public function getBicMembershipCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN_Membership']['BIC'][$field];
   }
+
+  public function getTnvMembershipCustomFieldValue($field='id') {
+    return $this->custom_fields['IBAN_Membership']['tnv'][$field];
+  }
   
   public function getIbanContributionCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN_Contribution']['IBAN'][$field];
@@ -94,6 +102,10 @@ class CRM_Ibanaccounts_Config {
   
   public function getBicContributionCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN_Contribution']['BIC'][$field];
+  }
+
+  public function getTnvContributionCustomFieldValue($field='id') {
+    return $this->custom_fields['IBAN_Contribution']['tnv'][$field];
   }
   
 }
