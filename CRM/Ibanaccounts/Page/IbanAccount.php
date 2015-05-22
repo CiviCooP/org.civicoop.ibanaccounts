@@ -19,6 +19,11 @@ class CRM_Ibanaccounts_Page_IbanAccount extends CRM_Core_Page {
     $this->assign('accounts', $accounts);
     $this->assign('contactId', $this->_contactId);
 
+    $this->assign('permission', 'view');
+    if (CRM_Contact_BAO_Contact_Permission::allow($this->_contactId, CRM_Core_Permission::EDIT)) {
+      $this->assign('permission', 'edit');
+    }
+
     parent::run();
     
     //set user context
