@@ -57,18 +57,20 @@ function ibanaccounts_civicrm_tabs(&$tabs, $contactID) {
      unset($tabs[$key]);
    } 
   }
-  
-  $url = CRM_Utils_System::url('civicrm/contact/ibanaccount/view', "cid=$contactID&snippet=1");
 
-  //Count rules
-  $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactID);
-  $tabs[] = array(
-    'id' => 'iban_accounts',
-    'url' => $url,
-    'count' => count($accounts),
-    'title' => ts('IBAN Accounts'),
-    'weight' => -100
-  );
+  if (CRM_Core_Permission::check('access CiviContribute')) {
+    $url = CRM_Utils_System::url('civicrm/contact/ibanaccount/view', "cid=$contactID&snippet=1");
+
+    //Count rules
+    $accounts = CRM_Ibanaccounts_Ibanaccounts::IBANForContact($contactID);
+    $tabs[] = array(
+      'id' => 'iban_accounts',
+      'url' => $url,
+      'count' => count($accounts),
+      'title' => ts('IBAN Accounts'),
+      'weight' => -100
+    );
+  }
 }
 
 /**
