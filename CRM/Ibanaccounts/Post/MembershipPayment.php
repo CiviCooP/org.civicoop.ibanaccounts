@@ -38,8 +38,8 @@ class CRM_Ibanaccounts_Post_MembershipPayment {
     $dao = CRM_Core_DAO::executeQuery($sql, array(
           '1' => array($contribution_id, 'Integer'),
           '2' => array($iban, 'String'),
-          '3' => array($bic, 'String'),
-          '4' => array($tnv, 'String'),
+          '3' => array(empty($bic) ? '' : $bic, 'String'),
+          '4' => array(empty($tnv) ? '' : $tnv, 'String'),
     ));
   }
   
