@@ -15,6 +15,8 @@ class CRM_Ibanaccounts_Validator {
   public static function validateIbanField($iban, $contactId) {
     require_once('php-iban/oophp-iban.php');
     $ibanValidator = new IBAN();
+    $config = CRM_Ibanaccounts_Config::singleton();
+
 
     //a new iban account is provided
     if (empty($iban)) {
@@ -23,8 +25,18 @@ class CRM_Ibanaccounts_Validator {
       return ts("'" . $iban . "' is not a valid IBAN");
     }
 
+    //only validate if iban exists at other contact when that functionality is enabled
+    if (!$config->isIbanOnlyAllowedOnce()) {
+      //iban account is allowed to exist at multiple contacts
+      return "";
+    }
+
+
+    $iban_class = new IBAN($iban);
+    $iban_system = $iban_class->MachineFormat();
+
     //check if IBAN belongs to another contact
-    $accounts = CRM_Ibanaccounts_Ibanaccounts::findIBANByIban($iban);
+    $accounts = CRM_Ibanaccounts_Ibanaccounts::findIBANByIban($iban_system);
     $foundAtOtherContact = false;
     $otherContactId = false;
     $foundAtSelf = false;

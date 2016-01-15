@@ -107,5 +107,14 @@ class CRM_Ibanaccounts_Config {
   public function getTnvContributionCustomFieldValue($field='id') {
     return $this->custom_fields['IBAN_Contribution']['tnv'][$field];
   }
+
+  /**
+   * Return true when you want to enable validation of iban exist at other contact
+   *
+   * @return bool
+   */
+  public function isIbanOnlyAllowedOnce() {
+    return false;
+  }
   
 }
