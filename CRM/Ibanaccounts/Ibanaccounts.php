@@ -173,8 +173,8 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $iban_class = new IBAN($iban);
     $iban_system = $iban_class->MachineFormat();
     
-    $hooks = CRM_Utils_Hook::singleton();
-    $usages = $hooks->invoke(2, $iban_system, $contactId, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_iban_usages');
+    $hooks = CRM_Ibanaccounts_Utils_HookInvoker::singleton();
+    $usages = $hooks->hook_civicrm_iban_usages($iban_system, $contactId);
     if (!is_array($usages)) {
       $usages = array();
     }
@@ -191,8 +191,8 @@ class CRM_Ibanaccounts_Ibanaccounts {
     $iban_class = new IBAN($iban);
     $iban_system = $iban_class->MachineFormat();
     
-    $hooks = CRM_Utils_Hook::singleton();
-    $hooks->invoke(2, $iban_system, $contactId, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_remove_iban');
+    $hooks = CRM_Ibanaccounts_Utils_HookInvoker::singleton();
+    $hooks->hook_civicrm_remove_iban($iban_system, $contactId);
     
     $config = CRM_Ibanaccounts_Config::singleton();
     $iban_field_id = $config->getIbanCustomFieldValue('id');
