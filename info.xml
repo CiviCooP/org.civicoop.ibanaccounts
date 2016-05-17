@@ -8,13 +8,13 @@
     <author>Jaap Jansma</author>
     <email>helpdesk@civicoop.org</email>
   </maintainer>
-  <releaseDate>2014-06-10</releaseDate>
-  <version>1.0</version>
+  <releaseDate>2016-05-17</releaseDate>
+  <version>1.1</version>
   <develStage>alpha</develStage>
   <compatibility>
     <ver>4.4</ver>
+    <ver>4.6</ver>
   </compatibility>
-  <comments>This is a new, undeveloped module</comments>
   <civix>
     <namespace>CRM/Ibanaccounts</namespace>
   </civix>
