@@ -88,8 +88,8 @@ abstract class CRM_Ibanaccounts_Buildform_IbanAccounts {
     }
 
     CRM_Core_Region::instance('page-body')->add($snippet);
-    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.ibanaccounts', 'js/iban_account.js', -1);
-    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.ibanaccounts', 'js/'.strtolower($this->getName()).'.js', 10);
+    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.ibanaccounts', 'js/iban_account.js', -1, 'html-header');
+    CRM_Core_Resources::singleton()->addScriptFile('org.civicoop.ibanaccounts', 'js/'.strtolower($this->getName()).'.js', 10, 'html-header');
   }
 
 }
