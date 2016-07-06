@@ -5,7 +5,7 @@ function IBAN_Membership() {
 IBAN_Membership.prototype = new IBAN_Account();
 IBAN_Membership.prototype.constructor = IBAN_Membership;
 IBAN_Membership.prototype.super = new IBAN_Account();
-IBAN_Membership.prototype.iban_custom_field_block = '#IBAN_Membership';
+IBAN_Membership.prototype.iban_custom_field_block = '.custom-group-IBAN_Membership';
 
 IBAN_Membership.prototype.contributionContactElement = '#contribution_contact_1';
 IBAN_Membership.prototype.contributionContactHiddenElement = 'input[name="contribution_contact_select_id[1]"]';
