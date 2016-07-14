@@ -14,8 +14,8 @@ class CRM_Ibanaccounts_Buildform_Membership extends CRM_Ibanaccounts_Buildform_I
     }
 
     //check if contribution is recorded for someone else
-    if (isset($values['contribution_contact_select_id']) && isset($values['contribution_contact_select_id'][1]) && !empty($values['contribution_contact_select_id'][1])) {
-      $contactId = $values['contribution_contact_select_id'][1];
+    if (isset($values['soft_credit_contact_id']) && !empty($values['soft_credit_contact_id'])) {
+      $contactId = $values['soft_credit_contact_id'];
     } elseif (isset($values['contact_select_id']) && isset($values['contact_select_id'][1])) {
       $contactId = $values['contact_select_id'][1];
     }
