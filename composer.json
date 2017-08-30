@@ -1,0 +1,12 @@
+{
+  "name": "civicoop/org.civicoop.ibanaccounts",
+  "description": "IBAN Accounts per contact and use for memberships and contributions",
+  "type": "civicrm-module",
+  "authors": [
+    {
+      "name": "Jaap Jansma",
+      "email": "helpdesk@civicoop.org"
+    }
+  ],
+  "license": "AGPL-3.0"
+}
