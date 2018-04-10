@@ -7,6 +7,17 @@ class CRM_Ibanaccounts_Page_IbanAccount extends CRM_Core_Page {
   protected $_contactId;
   
   function run() {
+  	if (!CRM_Ibanaccounts_Config::accessToIbanAccounts()) {
+  		CRM_Core_Session::setStatus('U hebt geen toegang tot deze pagina.', '', 'info');
+	    $referer = CRM_Utils_System::refererPath();
+	    if ($referer && strpos($referer, $_SERVER['REQUEST_URI']) === false) {
+	      CRM_Utils_System::redirect($referer);
+	    }
+	    else {
+	      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/dashboard'));
+	    }
+  	}
+		
     $this->_contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
     $action = CRM_Utils_Request::retrieve('action', 'String');
     if (isset($action) && $action == CRM_Core_Action::DELETE) {

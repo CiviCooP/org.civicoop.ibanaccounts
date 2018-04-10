@@ -35,6 +35,19 @@ class CRM_Ibanaccounts_Config {
       $this->bicExtensionEnabled = true;
     }
   }
+
+	/**
+	 * Returns whether the user has access to the iban account custom data set.
+	 */
+	public static function accessToIbanAccounts() {
+		try {
+			$accessToCustomGroup = civicrm_api3('CustomGroup', 'getsingle', array('check_permissions' => 1, 'name' => 'IBAN'));
+			return true;
+		} catch (Exception $e) {
+			return false;
+		}
+		return false;
+	}
   
   /**
    * Singleton instanciated function

@@ -14,8 +14,19 @@ class CRM_Ibanaccounts_Form_EditIbanAccount extends CRM_Core_Form {
   protected $_ibanId;
   
   function preProcess() {
+  	if (!CRM_Ibanaccounts_Config::accessToIbanAccounts()) {
+  		CRM_Core_Session::setStatus('U hebt geen toegang tot deze pagina.', '', 'info');
+	    $referer = CRM_Utils_System::refererPath();
+	    if ($referer && strpos($referer, $_SERVER['REQUEST_URI']) === false) {
+	      CRM_Utils_System::redirect($referer);
+	    }
+	    else {
+	      CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/dashboard'));
+	    }
+  	}
+		
     parent::preProcess();
-    
+		
     $this->_contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
     $this->_ibanId = CRM_Utils_Request::retrieve('id', 'Positive', $this, TRUE);
     $this->assign('contact_display_name', CRM_Contact_BAO_Contact::displayName($this->_contactId));
